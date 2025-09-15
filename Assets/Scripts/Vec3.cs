@@ -4,26 +4,69 @@ public class Vec3 {
     public float x;
     public float y;
     public float z;
+    public static Vec3 Zero() {
+        return new Vec3(0, 0, 0);
+    }
 
-    Vec3(float x, float y, float z) {
+    public override string ToString() {
+        return "<" + x + ", " + y + ", " + z + ">";
+    }
+
+    public Vec3(float x, float y, float z) {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+
+    public static Vec3 operator +(Vec3 a, Vec3 b) {
+        return new Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
+    }
+
+    public static Vec3 operator -(Vec3 a, Vec3 b) {
+        return new Vec3(a.x - b.x, a.y - b.y, a.z - b.z);
+    }
+
+    public static Vec3 operator -(Vec3 a) {
+        return new Vec3(-a.x, -a.y, -a.z);
+    }
+
+    public static Vec3 operator *(Vec3 a, Vec3 b) {
+        return new Vec3(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
+    public static Vec3 operator *(Vec3 b, float s) {
+        return new Vec3(s * b.x, s * b.y, s * b.z);
+    }
+
+    public static Vec3 operator *(float s, Vec3 b) {
+        return new Vec3(s * b.x, s * b.y, s * b.z);
+    }
+
+
+    public static Vec3 operator /(Vec3 b, float s) {
+        return new Vec3(b.x / s, b.y / s, b.z / s);
     }
 
     public Vec3 Clone() {
         return new Vec3(x, y, z);
     }
 
+    // calculates the magnitude of this vector squared. When comparing the magnitude of two vectors this should be used as its slightly faster to calculate
+    public float SqrMagnitude() {
+        return (x * x) + (y * y) + (z * z);
+    }
+
     public float Magnitude() {
-        return Mathf.Sqrt((x * x) + (y * y) + (z * z));
+        return MathUtils.Sqrt(SqrMagnitude());
     }
 
     public Vec3 Normalize() {
         float mag = Magnitude();
-        x /= mag;
-        y /= mag;
-        z /= mag;
+        if (mag == 0) {
+            x = 1;
+            return this;
+        }
+        MultiplyScalar(1 / mag);
         return this;
     }
 
@@ -130,5 +173,10 @@ public class Vec3 {
     // returns the euclidean distance between this vector and a
     public float DistanceTo(Vec3 a) {
         return Mathf.Sqrt(Mathf.Pow(a.x - x, 2) + Mathf.Pow(a.y - y, 2) + Mathf.Pow(a.z - z, 2));
+    }
+
+    // returns whether two vectors are equal
+    public bool Equals(Vec3 a) {
+        return a.x == x && a.y == y && a.z == z;
     }
 }
