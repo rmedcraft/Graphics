@@ -7,9 +7,9 @@ public class MathUtils {
     */
     public static float Sqrt(float n, float l = 0.0001f) {
         float x = n;
-        //root = 0.5 * (X + (N / X)) where X is any guess which can be assumed to be N or 1. 
 
         while (true) {
+            // root = 0.5 * (X + (N / X)) where X is any guess which can be assumed to be N or 1. 
             float root = 0.5f * (x + (n / x));
 
             if (Abs(x - root) < l) {

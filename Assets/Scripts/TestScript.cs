@@ -13,6 +13,11 @@ public class TestScript : MonoBehaviour {
         testVec.Normalize();
         print(testVec.Magnitude());
         print(testVec.ToString());
+
+        Vec3 otherVec = new(1, 1, 1);
+
+        otherVec.Cross(testVec);
+        print(otherVec.ToString());
     }
 
     // Update is called once per frame

@@ -18,6 +18,13 @@ public class Vec3 {
         this.z = z;
     }
 
+    public Vec3() {
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+    }
+
+
     public static Vec3 operator +(Vec3 a, Vec3 b) {
         return new Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
     }
