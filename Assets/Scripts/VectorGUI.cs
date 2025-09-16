@@ -8,7 +8,7 @@ public class VectorGUI : MonoBehaviour {
     Rect win = new Rect(12, 12, 920, 520);
 
     void OnGUI() {
-        win = GUI.Window(42, win, DrawWindow, "Vector Display (CustomMath.Vec3)");
+        win = GUI.Window(42, win, DrawWindow, "Vector Display (Vec3)");
     }
 
     void DrawWindow(int id) {

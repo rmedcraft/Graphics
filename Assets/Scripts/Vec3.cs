@@ -19,9 +19,9 @@ public class Vec3 {
     }
 
     public Vec3() {
-        this.x = 0;
-        this.y = 0;
-        this.z = 0;
+        this.x = 1;
+        this.y = 1;
+        this.z = 1;
     }
 
 
