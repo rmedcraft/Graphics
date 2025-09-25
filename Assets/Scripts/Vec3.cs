@@ -186,4 +186,21 @@ public class Vec3 {
     public bool Equals(Vec3 a) {
         return a.x == x && a.y == y && a.z == z;
     }
+
+    // gets the given vector element as though its an array
+    public float GetComponent(int index) {
+        if (index == 0) {
+            return x;
+        } else if (index == 1) {
+            return y;
+        } else if (index == 2) {
+            return z;
+        }
+        return -1;
+    }
+
+    // converts the components of this vector to an array and returns it. 
+    public float[] ToArray() {
+        return new float[] { x, y, z };
+    }
 }

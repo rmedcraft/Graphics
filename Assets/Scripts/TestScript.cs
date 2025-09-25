@@ -18,6 +18,28 @@ public class TestScript : MonoBehaviour {
 
         otherVec.Cross(testVec);
         print(otherVec.ToString());
+
+        Mat4 identity = Mat4.Identity();
+        // print(identity.ToString());
+
+        Mat4 testMat = new Mat4(new float[,]{
+            {2f, 2f, 1f, 1f },
+            {2f, 2f, 1f, 1f },
+            {2f, 2f, 2f, 2f },
+            {2f, 2f, 2f, 2f },
+        });
+        print(testMat);
+
+        Mat4 testMat2 = new Mat4(new float[,]{
+            {0f, 1f, 1f, 0f },
+            {1f, 1f, 2f, 2f },
+            {2f, 2f, 1f, 1f },
+            {1f, 0f, 3f, 1f },
+        });
+        print(testMat2);
+
+        Mat4 mult = testMat * testMat2;
+        print(mult);
     }
 
     // Update is called once per frame
