@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Graphics-Intro.sln"
+    "dotnet.defaultSolution": "graphics.sln"
 }

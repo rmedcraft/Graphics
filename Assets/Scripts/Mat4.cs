@@ -205,6 +205,8 @@ public class Mat4 {
             }
             output += "\n";
         }
+        output += "}";
+
         return output;
     }
 }
