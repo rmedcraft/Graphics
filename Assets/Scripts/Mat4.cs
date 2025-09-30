@@ -11,7 +11,7 @@ public class Mat4 {
         return m;
     }
 
-    // default constructor, sets the matrix to the identity
+    // default constructor, sets the matrix to all zeros
     public Mat4() { }
 
     public Mat4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
@@ -127,6 +127,48 @@ public class Mat4 {
         return scale * this;
     }
 
+    public static Mat4 Ortho(float left, float right, float bottom, float top, float near, float far) {
+        return new Mat4(
+            2 / (right - left), 0, 0, -(right + left) / (right - left),
+            0, 2 / (top - bottom), 0, -(top + bottom) / top - bottom,
+            0, 0, -2 / (far - near), -(far + near) / (far - near),
+            0, 0, 0, 1
+        );
+    }
+
+    public static Mat4 Perspective(float fovDegree, float aspect, float near, float far) {
+        float rad = fovDegree * Mathf.Deg2Rad;
+
+        float tan = Mathf.Tan(rad / 2f);
+        float top = near * tan;
+        float right = top * aspect;
+
+        Mat4 m = new Mat4();
+        m.matrix[0, 0] = near / right;
+        m.matrix[1, 1] = near / top;
+        m.matrix[2, 2] = -(far + near) / (near - far);
+        m.matrix[3, 2] = -1;
+        m.matrix[2, 3] = -(2 * far * near) / (far - near);
+        return m;
+    }
+
+    public Mat4 RotateAroundAxis(Vec3 n, float angle) {
+        float rad = Mathf.Deg2Rad * angle;
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+
+        Mat4 mat = new Mat4(
+            Mathf.Pow(n.x, 2) + (1 - Mathf.Pow(n.x, 2)) * cos, n.x * n.y * (1 - cos) - n.z * sin, n.x * n.y * (1 - cos) + n.y * sin, 0,
+            n.x * n.y * (1 - cos) + n.z * sin, Mathf.Pow(n.y, 2) + (1 - Mathf.Pow(n.y, 2)) * cos, n.y * n.z * (1 - cos) - n.x * sin, 0,
+            n.x * n.z * (1 - cos) - n.y * sin, n.y * n.z * (1 - cos) + n.x * sin, Mathf.Pow(n.z, 2) + (1 - Mathf.Pow(n.z, 2)) * cos, 0,
+            0, 0, 0, 1
+        );
+
+        return mat * this;
+    }
+
+
+    // multiples a and b
     public static Mat4 operator *(Mat4 a, Mat4 b) {
         float[,] output = new float[4, 4];
 
@@ -151,25 +193,6 @@ public class Mat4 {
         return new Mat4(output);
     }
 
-    public float[] GetRow(int index) {
-        float[] output = new float[4];
-
-        for (int i = 0; i < 4; i++) {
-            output[i] = matrix[index, i];
-        }
-        return output;
-    }
-
-
-    public float[] GetColumn(int index) {
-        float[] output = new float[4];
-
-        for (int i = 0; i < 4; i++) {
-            output[i] = matrix[i, index];
-        }
-        return output;
-    }
-
     public static Vec3 operator *(Mat4 a, Vec3 b) {
         float[] output = new float[3];
 
@@ -191,6 +214,38 @@ public class Mat4 {
         return new Vec3(output[0], output[1], output[2]);
     }
 
+
+    // gets the row at a specified index as an array
+    public float[] GetRow(int index) {
+        float[] output = new float[4];
+
+        for (int i = 0; i < 4; i++) {
+            output[i] = matrix[index, i];
+        }
+        return output;
+    }
+
+    // gets the column at a specified index as an array
+    public float[] GetColumn(int index) {
+        float[] output = new float[4];
+
+        for (int i = 0; i < 4; i++) {
+            output[i] = matrix[i, index];
+        }
+        return output;
+    }
+
+    public bool Equals(Mat4 a) {
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                if (a.matrix[r, c] != this.matrix[r, c]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     // Creates a deep copy of the matrix 
     public Mat4 Clone() {
         return new Mat4(matrix);
@@ -201,7 +256,7 @@ public class Mat4 {
         for (int i = 0; i < matrix.GetLength(0); i++) {
             output += "\t";
             for (int j = 0; j < matrix.GetLength(1); j++) {
-                output += matrix[i, j] + ", ";
+                output += Mathf.Round(matrix[i, j] * 10f) * .1 + ", ";
             }
             output += "\n";
         }
