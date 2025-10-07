@@ -71,6 +71,15 @@ namespace MedGraphics {
             return trans * this;
         }
 
+        public static Mat4 Translation(float tx, float ty, float tz) {
+            return new Mat4(
+                1, 0, 0, tx,
+                0, 1, 0, ty,
+                0, 0, 1, tz,
+                0, 0, 0, 1
+            );
+        }
+
         public Mat4 RotateX(float degrees) {
             float radians = Mathf.Deg2Rad * degrees;
 
@@ -85,6 +94,57 @@ namespace MedGraphics {
             );
 
             return rotateX * this;
+        }
+
+        public static Mat4 RotationX(float degrees) {
+            float radians = Mathf.Deg2Rad * degrees;
+
+            float cos = Mathf.Cos(radians);
+            float sin = Mathf.Sin(radians);
+
+            return new Mat4(
+                1, 0, 0, 0,
+                0, cos, -sin, 0,
+                0, sin, cos, 0,
+                0, 0, 0, 1
+            );
+        }
+
+        public static Mat4 RotationY(float degrees) {
+            float radians = Mathf.Deg2Rad * degrees;
+
+            float cos = Mathf.Cos(radians);
+            float sin = Mathf.Sin(radians);
+
+            return new Mat4(
+                cos, 0, sin, 0,
+                0, 1, 0, 0,
+                -sin, 0, cos, 0,
+                0, 0, 0, 1
+            );
+        }
+
+        public static Mat4 RotationZ(float degrees) {
+            float radians = Mathf.Deg2Rad * degrees;
+
+            float cos = Mathf.Cos(radians);
+            float sin = Mathf.Sin(radians);
+
+            return new Mat4(
+                cos, -sin, 0, 0,
+                sin, cos, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+            );
+        }
+
+        public static Mat4 Scaling(float sx, float sy, float sz) {
+            return new Mat4(
+                sx, 0, 0, 0,
+                0, sy, 0, 0,
+                0, 0, sz, 0,
+                0, 0, 0, 1
+            );
         }
 
         public Mat4 RotateY(float degrees) {
@@ -195,25 +255,23 @@ namespace MedGraphics {
             return new Mat4(output);
         }
 
-        public static Vec3 operator *(Mat4 a, Vec3 b) {
-            float[] output = new float[3];
+        public static Vec4 operator *(Mat4 a, Vec4 b) {
+            float[] output = new float[4];
 
             // loop through each row of the matrix, treat as though the last row doesnt matter since we're multiplying a vec3
             // todo: might be useful to know if the w coordinate is anything other than 1
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
                 float[] rowA = a.GetRow(i);
 
                 float dotProduct = 0;
-                for (int j = 0; j < 3; j++) {
+                for (int j = 0; j < 4; j++) {
                     dotProduct += rowA[j] * b.GetComponent(j);
                 }
 
-                // treat the last coordinate of the vec3 as 1, add the last index of row3 * 1 to the dot product
-                dotProduct += rowA[3];
                 output[i] = dotProduct;
             }
 
-            return new Vec3(output[0], output[1], output[2]);
+            return new Vec4(output[0], output[1], output[2], output[3]);
         }
 
 

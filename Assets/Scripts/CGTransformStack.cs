@@ -32,10 +32,6 @@ public class CGTransformStack {
         return current;
     }
 
-    public void Mult(Mat4 m) {
-        current *= m;
-    }
-
     public void Translate(float x, float y, float z) {
         current = current.Translate(x, y, z);
     }

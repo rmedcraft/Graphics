@@ -206,4 +206,39 @@ namespace MedGraphics {
             return new float[] { x, y, z };
         }
     }
+
+    public class Vec4 {
+        public float x, y, z, w;
+
+        public Vec4(float x, float y, float z, float w) { this.x = x; this.y = y; this.z = z; this.w = w; }
+
+        public static Vec4 FromPoint(Vec3 p) => new Vec4(p.x, p.y, p.z, 1f);
+
+        public static Vec4 From3DVector(Vec3 v) => new Vec4(v.x, v.y, v.z, 0f);
+
+        public Vec3 XYZ() => new Vec3(x, y, z);
+
+        public Vec3 Homogenized() {
+            if (w > -1e-8f && w < 1e-8f) return new Vec3(x, y, z);
+            float invW = 1.0f / w;
+            return new Vec3(x * invW, y * invW, z * invW);
+        }
+
+        public float GetComponent(int index) {
+            if (index == 0) {
+                return x;
+            } else if (index == 1) {
+                return y;
+            } else if (index == 2) {
+                return z;
+            } else if (index == 3) {
+                return w;
+            }
+            return -1;
+        }
+
+        public override string ToString() {
+            return "(" + x + ", " + y + ", " + z + ", " + w + ")";
+        }
+    }
 }

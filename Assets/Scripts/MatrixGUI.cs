@@ -98,7 +98,7 @@ public class MatrixGUI : MonoBehaviour {
         // Build matrices and compute with your custom math
         var A = new Mat4(a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33);
         var B = new Mat4(b00, b01, b02, b03, b10, b11, b12, b13, b20, b21, b22, b23, b30, b31, b32, b33);
-        var C = new Vec3(cx, cy, cz);
+        var C = new Vec4(cx, cy, cz, 1);
 
         var matMult = A * B;
         var aVec = A * C;
