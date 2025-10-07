@@ -1,5 +1,5 @@
 using UnityEngine;   // MonoBehaviour + GUI only
-
+using MedGraphics;
 public class VectorGUI : MonoBehaviour {
     // Editable components for A and B
     [SerializeField] float ax = 1f, ay = 2f, az = 3f;

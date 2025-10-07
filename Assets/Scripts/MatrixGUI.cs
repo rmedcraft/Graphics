@@ -1,5 +1,5 @@
 using UnityEngine;   // MonoBehaviour + GUI only
-
+using MedGraphics;
 public class MatrixGUI : MonoBehaviour {
     // Editable components for A and B
 
@@ -175,7 +175,7 @@ public class MatrixGUI : MonoBehaviour {
 
     static void TextField(ref float v) {
         GUILayout.BeginHorizontal();
-        v = float.Parse(GUILayout.TextField(v.ToString()));
+        v = Mathf.Round(float.Parse(GUILayout.TextField(v.ToString())) * 100) / 100;
         GUILayout.EndHorizontal();
     }
 
