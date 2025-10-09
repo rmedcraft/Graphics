@@ -16,13 +16,22 @@ namespace MedGraphics {
         // default constructor, sets the matrix to all zeros
         public Mat4() { }
 
+        public Mat4(float f) {
+            matrix = new float[,]{
+                {f, f, f, f},
+                {f, f, f, f},
+                {f, f, f, f},
+                {f, f, f, f}
+            };
+        }
+
         public Mat4(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33) {
             matrix = new float[,]{
-            { m00, m01, m02, m03},
-            { m10, m11, m12, m13},
-            { m20, m21, m22, m23},
-            { m30, m31, m32, m33},
-        };
+                { m00, m01, m02, m03},
+                { m10, m11, m12, m13},
+                { m20, m21, m22, m23},
+                { m30, m31, m32, m33},
+            };
         }
 
 
@@ -192,7 +201,7 @@ namespace MedGraphics {
         public static Mat4 Ortho(float left, float right, float bottom, float top, float near, float far) {
             return new Mat4(
                 2 / (right - left), 0, 0, -(right + left) / (right - left),
-                0, 2 / (top - bottom), 0, -(top + bottom) / top - bottom,
+                0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
                 0, 0, -2 / (far - near), -(far + near) / (far - near),
                 0, 0, 0, 1
             );
