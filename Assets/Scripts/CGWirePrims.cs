@@ -15,14 +15,10 @@ public class CGWirePrims {
         float s = length * 0.5f;
 
         Vec3[] v = new Vec3[] {
-            new Vec3(-1, -1, -1), // v0
-            new Vec3(1, -1, -1), // v1
-            new Vec3(1, 1, -1), // v2
-            new Vec3(-1, 1, -1), // v3
-            new Vec3(-1, 1, 1), // v4
-            new Vec3(1, -1, 1), // v5
-            new Vec3(1, 1, 1), // v6
-            new Vec3(-1, 1, 1) // v7
+            new Vec3(-s,-s,-s), new Vec3(+s,-s,-s),
+            new Vec3(+s,+s,-s), new Vec3(-s,+s,-s),
+            new Vec3(-s,-s,+s), new Vec3(+s,-s,+s),
+            new Vec3(+s,+s,+s), new Vec3(-s,+s,+s)
         };
 
         int[,] edges = new int[,] {

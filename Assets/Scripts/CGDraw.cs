@@ -83,10 +83,9 @@ namespace CG {
         }
 
         void DrawLineObject(Vec3 aObj, Vec3 bObj, Mat4 m, Mat4 p, float vx, float vy, float vw, float vh) {
-            Vec4 aClip = p * m * Vec4.FromPoint(aObj);
-            Vec4 bClip = p * m * Vec4.FromPoint(bObj);
-
             var pm = p * m;         // composite once
+            var aClip = pm * Vec4.FromPoint(aObj);    // then apply to each vertex
+            var bClip = pm * Vec4.FromPoint(bObj);
 
 
             // perspective divide -> NDC
