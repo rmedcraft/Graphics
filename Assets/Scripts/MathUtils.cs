@@ -26,4 +26,12 @@ public class MathUtils {
         }
         return n;
     }
+
+    public static int Round(float n) {
+        return (int)n;
+    }
+
+    // public static int Ceil(float n) {
+
+    // }
 }

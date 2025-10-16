@@ -6,6 +6,7 @@ using MedGraphics;
 
 namespace CG {
     [RequireComponent(typeof(Camera))]
+    [RequireComponent(typeof(CG_ModelingTransformsDemo))]
     public class CG_Draw : MonoBehaviour {
         private Material lineMat;
         private CG_ModelingTransformsDemo demo;
@@ -39,8 +40,10 @@ namespace CG {
             int w = Screen.width;
             int h = Screen.height;
 
-            var m = demo.BuildModelMatrix();
             var p = demo.BuildProjectionMatrix(w, h);
+
+            var mGrid = Mat4.Identity();
+            var mCube = demo.BuildModelMatrix();
 
             // viewport in pixels
             float vx = demo.vpX * w;
@@ -48,14 +51,17 @@ namespace CG {
             float vw = demo.vpW * w; if (vw < 1f) vw = 1f;
             float vh = demo.vpH * h; if (vh < 1f) vh = 1f;
 
-            var prims = demo.CollectPrims();
+            var gridAndAxes = demo.CollectGridAndAxes();
+            var cube = demo.CollectCube();
+
             GL.Color(Color.white); // or any bright color, alpha=1
 
             lineMat.SetPass(0);
             GL.PushMatrix();
             GL.LoadPixelMatrix(0, w, h, 0); // 2D pixel space, (0,0)=top-left
 
-            DrawLinesTransformed(prims, m, p, vx, vy, vw, vh);
+            DrawLinesTransformed(gridAndAxes, mGrid, p, vx, vy, vw, vh);
+            DrawLinesTransformed(cube, mCube, p, vx, vy, vw, vh);
 
             GL.PopMatrix();
         }
@@ -68,6 +74,7 @@ namespace CG {
                 var ln = lines[i];
                 DrawLineObject(ln.a, ln.b, m, p, vx, vy, vw, vh);
             }
+
             GL.End();
         }
 

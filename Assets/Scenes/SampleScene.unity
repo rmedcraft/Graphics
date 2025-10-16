@@ -282,6 +282,11 @@ MonoBehaviour:
   autoSpin: 1
   showCube: 1
   cubeSize: 2
+  showAxes: 1
+  axesLength: 2
+  showGridXZ: 1
+  gridExtent: 8
+  gridStep: 1
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,6 +494,11 @@ MonoBehaviour:
   autoSpin: 1
   showCube: 1
   cubeSize: 2
+  showAxes: 1
+  axesLength: 2
+  showGridXZ: 1
+  gridExtent: 8
+  gridStep: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

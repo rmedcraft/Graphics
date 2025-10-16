@@ -25,13 +25,13 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public Vec3 spinSpeedDegPerSec = new Vec3(0, 45, 0);
 
     [Header("Primitives")]
-    // public bool showAxes = true;
-    // public float axesLen = 2f;
     public bool showCube = true;
     public float cubeSize = 2f;
-    // public bool showGrid = true;
-    // public int gridHalfSteps = 5;
-    // public float gridStep = 1f;
+    public bool showAxes = true;
+    public float axesLength = 2f;
+    public bool showGridXZ = true;
+    public float gridExtent = 8f;
+    public float gridStep = 1f;
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) usePerspective = false;
@@ -60,17 +60,27 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         if (usePerspective) {
             return Mat4.Perspective(fovY, aspect, nearPlane, farPlane);
         } else {
-            float halfH = orthoHeight * .5f;
+            float halfH = orthoHeight * 0.5f;
             float halfW = halfH * aspect;
-
-            return Mat4.Ortho(-halfW, halfW, -halfH, halfH, nearPlane, farPlane);
+            return Mat4.Ortho(-halfW, +halfW, -halfH, +halfH, nearPlane, farPlane);
         }
     }
 
-    public List<Line3> CollectPrims() {
+    public List<Line3> CollectGridAndAxes() {
+        var lines = new List<Line3>();
+        if (showAxes) {
+            lines.AddRange(CGWirePrims.Axes(axesLength));
+        }
+        if (showGridXZ) {
+            lines.AddRange(CGWirePrims.GridXZ(gridExtent, gridStep));
+        }
+        return lines;
+    }
+
+    public List<Line3> CollectCube() {
         var lines = new List<Line3>();
 
-        if (showCube) lines.AddRange(CGWirePrims.Axes());
+        if (showCube) lines.AddRange(CGWirePrims.Cube(cubeSize));
         return lines;
     }
 }
