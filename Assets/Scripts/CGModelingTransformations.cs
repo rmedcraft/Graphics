@@ -17,12 +17,16 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     [Range(0, 1)] public float vpH = 1f;
 
     [Header("Modeling Transform (T * Rz * Ry * Rx * S)")]
-
-    public Vec3 translate = new Vec3(0, 0, 6);
-    public Vec3 rotateDeg = new Vec3(0, 0, 0);
-    public Vec3 scale = new Vec3();
+    public Vector3 translate = new Vector3(0, 0, -6);
+    public Vector3 rotateDeg = new Vector3(0, 0, 0);
+    public Vector3 scale = new Vector3(1, 1, 1);
     public bool autoSpin = true;
-    public Vec3 spinSpeedDegPerSec = new Vec3(0, 45, 0);
+    public Vector3 spinSpeedDegPerSec = new Vector3(0, 45, 0);
+
+    [Header("Grid Transform")]
+    public Vector3 translateGrid = new Vector3(0, 0, 0);
+    public Vector3 rotateGrid = new Vector3(0, 0, 0);
+    public Vector3 scaleGrid = new Vector3(1, 1, 1);
 
     [Header("Primitives")]
     public bool showCube = true;

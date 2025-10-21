@@ -42,7 +42,7 @@ namespace CG {
 
             var p = demo.BuildProjectionMatrix(w, h);
 
-            var mGrid = Mat4.Identity();
+            var mGrid = Mat4.Identity().Translate(0, 1, 0);
             var mCube = demo.BuildModelMatrix();
 
             // viewport in pixels
@@ -66,15 +66,82 @@ namespace CG {
             GL.PopMatrix();
         }
 
-        void DrawLinesTransformed(List<Line3> lines, Mat4 m, Mat4 p, float vx, float vy, float vw, float vh) {
-            // --- CUBE (non-axis, non-grid) ---
+        // void OnRenderObject() {
+        //     if (demo == null) return;
+        //     EnsureMaterial();
+
+        //     int W = Screen.width;
+        //     int H = Screen.height;
+
+        //     var M = demo.BuildModelMatrix();
+        //     var P = demo.BuildProjectionMatrix(W, H);
+
+        //     // viewport in pixels (avoid Mathf to stay consistent with "no math" rule for geometry)
+        //     float vx = demo.vpX * W;
+        //     float vy = demo.vpY * H;
+        //     float vw = demo.vpW * W; if (vw < 1f) vw = 1f;
+        //     float vh = demo.vpH * H; if (vh < 1f) vh = 1f;
+
+        //     var prims = demo.CollectPrims();
+
+        //     lineMat.SetPass(0);
+        //     GL.PushMatrix();
+        //     GL.LoadPixelMatrix(0, W, H, 0); // 2D pixel space, (0,0)=top-left
+
+        //     // Draw grid/cube in white, axes colored
+        //     DrawLinesTransformed(prims, M, P, vx, vy, vw, vh);
+
+        //     GL.PopMatrix();
+        // }
+
+        // void DrawLinesTransformed(List<Line3> lines, Mat4 m, Mat4 p, float vx, float vy, float vw, float vh) {
+        //     // --- CUBE (non-axis, non-grid) ---
+        //     GL.Begin(GL.LINES);
+        //     GL.Color(new Color(1, 1, 1, 1)); // white
+        //     for (int i = 0; i < lines.Count; i++) {
+        //         var ln = lines[i];
+        //         DrawLineObject(ln.a, ln.b, m, p, vx, vy, vw, vh);
+        //     }
+
+        //     GL.End();
+        // }
+
+        void DrawLinesTransformed(List<Line3> lines, Mat4 M, Mat4 P, float vx, float vy, float vw, float vh) {
+            // pass 1: non-axes (white)
             GL.Begin(GL.LINES);
-            GL.Color(new Color(1, 1, 1, 1)); // white
+            GL.Color(new Color(1, 1, 1, 1));
             for (int i = 0; i < lines.Count; i++) {
                 var ln = lines[i];
-                DrawLineObject(ln.a, ln.b, m, p, vx, vy, vw, vh);
+                bool isAxisX = IsAxis(ln, 0);
+                bool isAxisY = IsAxis(ln, 1);
+                bool isAxisZ = IsAxis(ln, 2);
+                if (isAxisX || isAxisY || isAxisZ) continue;
+                DrawLineObject(ln.a, ln.b, M, P, vx, vy, vw, vh);
             }
+            GL.End();
 
+            // X - red
+            GL.Begin(GL.LINES);
+            GL.Color(new Color(1, 0, 0, 1));
+            for (int i = 0; i < lines.Count; i++)
+                if (IsAxis(lines[i], 0))
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
+            GL.End();
+
+            // Y - green
+            GL.Begin(GL.LINES);
+            GL.Color(new Color(0, 1, 0, 1));
+            for (int i = 0; i < lines.Count; i++)
+                if (IsAxis(lines[i], 1))
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
+            GL.End();
+
+            // Z - blue
+            GL.Begin(GL.LINES);
+            GL.Color(new Color(0, 0, 1, 1));
+            for (int i = 0; i < lines.Count; i++)
+                if (IsAxis(lines[i], 2))
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
             GL.End();
         }
 

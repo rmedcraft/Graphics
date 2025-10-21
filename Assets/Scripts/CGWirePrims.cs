@@ -63,9 +63,11 @@ public class CGWirePrims {
         var lines = new List<Line3>();
 
         for (int i = -N; i <= N; i++) {
-            lines.Add(new Line3(new Vec3(-E, 0, i * step), new Vec3(E, 0, i * step)));
-            lines.Add(new Line3(new Vec3(i * step, 0, -E), new Vec3(i * step, 0, E)));
+            lines.Add(new Line3(new Vec3(-E, 0, i * step), new Vec3(+E, 0, i * step)));
+            lines.Add(new Line3(new Vec3(i * step, 0, -E), new Vec3(i * step, 0, +E)));
         }
+
+        Debug.Log(lines);
 
         return lines;
     }
