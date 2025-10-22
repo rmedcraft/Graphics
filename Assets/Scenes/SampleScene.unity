@@ -279,11 +279,14 @@ MonoBehaviour:
   vpY: 0
   vpW: 1
   vpH: 1
-  translate: {x: 0, y: 0, z: 6}
-  rotateDeg: {x: 0, y: 0, z: 0}
+  translate: {x: 0, y: 0, z: 15}
+  rotateDeg: {x: 35, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
   autoSpin: 1
   spinSpeedDegPerSec: {x: 0, y: 45, z: 0}
+  translateGrid: {x: 0, y: -1, z: 15}
+  rotateGrid: {x: 0, y: 0, z: 0}
+  scaleGrid: {x: 1, y: 1, z: 1}
   showCube: 1
   cubeSize: 2
   showAxes: 1
@@ -500,6 +503,9 @@ MonoBehaviour:
   scale: {x: 0, y: 0, z: 0}
   autoSpin: 1
   spinSpeedDegPerSec: {x: 0, y: 45, z: 0}
+  translateGrid: {x: 0, y: -1, z: 0}
+  rotateGrid: {x: 0, y: 0, z: 0}
+  scaleGrid: {x: 1, y: 1, z: 1}
   showCube: 1
   cubeSize: 2
   showAxes: 1

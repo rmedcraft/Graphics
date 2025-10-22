@@ -42,7 +42,8 @@ namespace CG {
 
             var p = demo.BuildProjectionMatrix(w, h);
 
-            var mGrid = Mat4.Identity().Translate(0, 1, 0);
+            var mAxis = Mat4.Identity();
+            var mGrid = demo.BuildGridMatrix();
             var mCube = demo.BuildModelMatrix();
 
             // viewport in pixels
@@ -51,8 +52,10 @@ namespace CG {
             float vw = demo.vpW * w; if (vw < 1f) vw = 1f;
             float vh = demo.vpH * h; if (vh < 1f) vh = 1f;
 
-            var gridAndAxes = demo.CollectGridAndAxes();
             var cube = demo.CollectCube();
+            var axes = demo.CollectAxes();
+            cube.AddRange(demo.CollectAxes());
+            var grid = demo.CollectGrid();
 
             GL.Color(Color.white); // or any bright color, alpha=1
 
@@ -60,7 +63,8 @@ namespace CG {
             GL.PushMatrix();
             GL.LoadPixelMatrix(0, w, h, 0); // 2D pixel space, (0,0)=top-left
 
-            DrawLinesTransformed(gridAndAxes, mGrid, p, vx, vy, vw, vh);
+            DrawLinesTransformed(grid, mGrid, p, vx, vy, vw, vh);
+            // DrawLinesTransformed(axes, mAxis, p, vx, vy, vw, vh);
             DrawLinesTransformed(cube, mCube, p, vx, vy, vw, vh);
 
             GL.PopMatrix();

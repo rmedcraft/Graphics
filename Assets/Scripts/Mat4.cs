@@ -207,21 +207,33 @@ namespace MedGraphics {
             );
         }
 
-        public static Mat4 Perspective(float fovDegree, float aspect, float near, float far) {
-            float rad = fovDegree * Mathf.Deg2Rad;
+        // public static Mat4 Perspective(float fovDegree, float aspect, float near, float far) {
+        //     float rad = fovDegree * Mathf.Deg2Rad;
 
-            float tan = Mathf.Tan(rad / 2f);
-            float top = near * tan;
-            float right = top * aspect;
+        //     float tan = Mathf.Tan(rad / 2f);
+        //     float top = near * tan;
+        //     float right = top * aspect;
 
-            Mat4 m = new Mat4();
-            m.matrix[0, 0] = near / right;
-            m.matrix[1, 1] = near / top;
-            m.matrix[2, 2] = -(far + near) / (near - far);
-            m.matrix[3, 2] = -1;
-            m.matrix[2, 3] = -(2 * far * near) / (far - near);
-            return m;
+        //     Mat4 m = new Mat4();
+        //     m.matrix[0, 0] = near / right;
+        //     m.matrix[1, 1] = near / top;
+        //     m.matrix[2, 2] = -(far + near) / (near - far);
+        //     m.matrix[3, 2] = -1;
+        //     m.matrix[2, 3] = -(2 * far * near) / (far - near);
+        //     return m;
+        // }
+        public static Mat4 Perspective(float fovYDegrees, float aspect, float near, float far) {
+            float fovYRad = fovYDegrees * Mathf.PI / 180f;
+            float f = 1f / Mathf.Tan(fovYRad / 2f);
+
+            return new Mat4(
+                f / aspect, 0, 0, 0,
+                0, f, 0, 0,
+                0, 0, far / (far - near), -(far * near) / (far - near),
+                0, 0, 1, 0
+            );
         }
+
 
         public Mat4 RotateAroundAxis(Vec3 n, float angle) {
             float rad = Mathf.Deg2Rad * angle;

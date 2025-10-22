@@ -17,14 +17,14 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     [Range(0, 1)] public float vpH = 1f;
 
     [Header("Modeling Transform (T * Rz * Ry * Rx * S)")]
-    public Vector3 translate = new Vector3(0, 0, -6);
-    public Vector3 rotateDeg = new Vector3(0, 0, 0);
+    public Vector3 translate = new Vector3(0, 0, 15);
+    public Vector3 rotateDeg = new Vector3(35, 0, 0);
     public Vector3 scale = new Vector3(1, 1, 1);
     public bool autoSpin = true;
     public Vector3 spinSpeedDegPerSec = new Vector3(0, 45, 0);
 
     [Header("Grid Transform")]
-    public Vector3 translateGrid = new Vector3(0, 0, 0);
+    public Vector3 translateGrid = new Vector3(0, -1, 15);
     public Vector3 rotateGrid = new Vector3(0, 0, 0);
     public Vector3 scaleGrid = new Vector3(1, 1, 1);
 
@@ -58,6 +58,15 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         // order: M = T * rz * ry * rx * s
         return t * rz * ry * rx * s;
     }
+    public Mat4 BuildGridMatrix() {
+        var t = Mat4.Translation(translateGrid.x, translateGrid.y, translateGrid.z);
+        var rx = Mat4.RotationX(rotateGrid.x);
+        var ry = Mat4.RotationY(rotateGrid.y);
+        var rz = Mat4.RotationZ(rotateGrid.z);
+        var s = Mat4.Scaling(scaleGrid.x, scaleGrid.y, scaleGrid.z);
+        // order: M = T * rz * ry * rx * s
+        return t * rz * ry * rx * s;
+    }
 
     public Mat4 BuildProjectionMatrix(int pixelW, int pixelH) {
         float aspect = (pixelH != 0) ? (pixelW / (float)pixelH) : 1f;
@@ -70,13 +79,18 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         }
     }
 
-    public List<Line3> CollectGridAndAxes() {
+    public List<Line3> CollectGrid() {
+        var lines = new List<Line3>();
+        if (showGridXZ) {
+            lines.AddRange(CGWirePrims.GridXZ(gridExtent, gridStep));
+        }
+        return lines;
+    }
+
+    public List<Line3> CollectAxes() {
         var lines = new List<Line3>();
         if (showAxes) {
             lines.AddRange(CGWirePrims.Axes(axesLength));
-        }
-        if (showGridXZ) {
-            lines.AddRange(CGWirePrims.GridXZ(gridExtent, gridStep));
         }
         return lines;
     }

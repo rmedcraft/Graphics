@@ -7,6 +7,11 @@ public class Line3 {
         this.a = a;
         this.b = b;
     }
+
+    override
+    public string ToString() {
+        return a.ToString() + "\n" + b.ToString();
+    }
 }
 
 public class CGWirePrims {
@@ -60,14 +65,17 @@ public class CGWirePrims {
         float E = N * step;
 
         // create grid lines
-        var lines = new List<Line3>();
+        var lines = new List<Line3>(4 * N + 2);
 
         for (int i = -N; i <= N; i++) {
             lines.Add(new Line3(new Vec3(-E, 0, i * step), new Vec3(+E, 0, i * step)));
             lines.Add(new Line3(new Vec3(i * step, 0, -E), new Vec3(i * step, 0, +E)));
         }
 
-        Debug.Log(lines);
+        Debug.Log("Printing Lines");
+        lines.ForEach((line) => {
+            Debug.Log(line);
+        });
 
         return lines;
     }
