@@ -72,11 +72,6 @@ public class CGWirePrims {
             lines.Add(new Line3(new Vec3(i * step, 0, -E), new Vec3(i * step, 0, +E)));
         }
 
-        Debug.Log("Printing Lines");
-        lines.ForEach((line) => {
-            Debug.Log(line);
-        });
-
         return lines;
     }
 }

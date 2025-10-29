@@ -26,6 +26,12 @@ namespace MedGraphics {
             this.z = 1;
         }
 
+        public Vec3(Vector3 v) {
+            this.x = v.x;
+            this.y = v.y;
+            this.z = v.z;
+        }
+
 
         public static Vec3 operator +(Vec3 a, Vec3 b) {
             return new Vec3(a.x + b.x, a.y + b.y, a.z + b.z);

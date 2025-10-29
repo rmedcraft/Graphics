@@ -294,6 +294,12 @@ MonoBehaviour:
   showGridXZ: 1
   gridExtent: 8
   gridStep: 1
+  axisDir: {x: 1, y: 1, z: 1}
+  axisAngleDeg: 0
+  usePivot: 0
+  pivotPoint: {x: 0, y: 0, z: 0}
+  cubeDisplacement: 3
+  useAssignmentLayout: 1
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -513,6 +519,12 @@ MonoBehaviour:
   showGridXZ: 1
   gridExtent: 8
   gridStep: 1
+  axisDir: {x: 1, y: 1, z: 1}
+  axisAngleDeg: 0
+  usePivot: 0
+  pivotPoint: {x: 0, y: 0, z: 0}
+  cubeDisplacement: 3
+  useAssignmentLayout: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

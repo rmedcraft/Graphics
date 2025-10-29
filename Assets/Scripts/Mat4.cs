@@ -69,17 +69,6 @@ namespace MedGraphics {
             }
         }
 
-        public Mat4 Translate(float tx, float ty, float tz) {
-            Mat4 trans = new Mat4(
-                1, 0, 0, tx,
-                0, 1, 0, ty,
-                0, 0, 1, tz,
-                0, 0, 0, 1
-            );
-
-            return trans * this;
-        }
-
         public static Mat4 Translation(float tx, float ty, float tz) {
             return new Mat4(
                 1, 0, 0, tx,
@@ -87,22 +76,6 @@ namespace MedGraphics {
                 0, 0, 1, tz,
                 0, 0, 0, 1
             );
-        }
-
-        public Mat4 RotateX(float degrees) {
-            float radians = Mathf.Deg2Rad * degrees;
-
-            float cos = Mathf.Cos(radians);
-            float sin = Mathf.Sin(radians);
-
-            Mat4 rotateX = new Mat4(
-                1, 0, 0, 0,
-                0, cos, -sin, 0,
-                0, sin, cos, 0,
-                0, 0, 0, 1
-            );
-
-            return rotateX * this;
         }
 
         public static Mat4 RotationX(float degrees) {
@@ -156,46 +129,23 @@ namespace MedGraphics {
             );
         }
 
-        public Mat4 RotateY(float degrees) {
-            float radians = Mathf.Deg2Rad * degrees;
-
-            float cos = Mathf.Cos(radians);
-            float sin = Mathf.Sin(radians);
-
-            Mat4 rotateY = new Mat4(
-                cos, 0, sin, 0,
-                0, 1, 0, 0,
-                -sin, 0, cos, 0,
-                0, 0, 0, 1
-            );
-
-            return rotateY * this;
-        }
-        public Mat4 RotateZ(float degrees) {
-            float radians = Mathf.Deg2Rad * degrees;
-
-            float cos = Mathf.Cos(radians);
-            float sin = Mathf.Sin(radians);
-
-            Mat4 rotateZ = new Mat4(
-                cos, -sin, 0, 0,
-                sin, cos, 0, 0,
-                0, 0, 1, 0,
-                0, 0, 0, 1
-            );
-
-            return rotateZ * this;
-        }
 
         public Mat4 Scale(float sx, float sy, float sz) {
-            Mat4 scale = new Mat4(
-                sx, 0, 0, 0,
-                0, sy, 0, 0,
-                0, 0, sz, 0,
-                0, 0, 0, 1
-            );
+            return Scaling(sx, sy, sz) * this;
+        }
 
-            return scale * this;
+        public Mat4 RotateX(float degrees) {
+            return RotationX(degrees) * this;
+        }
+        public Mat4 RotateY(float degrees) {
+            return RotationY(degrees) * this;
+        }
+        public Mat4 RotateZ(float degrees) {
+            return RotationZ(degrees) * this;
+        }
+
+        public Mat4 Translate(float tx, float ty, float tz) {
+            return Translation(tx, ty, tz) * this;
         }
 
         public static Mat4 Ortho(float left, float right, float bottom, float top, float near, float far) {
@@ -207,21 +157,6 @@ namespace MedGraphics {
             );
         }
 
-        // public static Mat4 Perspective(float fovDegree, float aspect, float near, float far) {
-        //     float rad = fovDegree * Mathf.Deg2Rad;
-
-        //     float tan = Mathf.Tan(rad / 2f);
-        //     float top = near * tan;
-        //     float right = top * aspect;
-
-        //     Mat4 m = new Mat4();
-        //     m.matrix[0, 0] = near / right;
-        //     m.matrix[1, 1] = near / top;
-        //     m.matrix[2, 2] = -(far + near) / (near - far);
-        //     m.matrix[3, 2] = -1;
-        //     m.matrix[2, 3] = -(2 * far * near) / (far - near);
-        //     return m;
-        // }
         public static Mat4 Perspective(float fovYDegrees, float aspect, float near, float far) {
             float fovYRad = fovYDegrees * Mathf.PI / 180f;
             float f = 1f / Mathf.Tan(fovYRad / 2f);
@@ -236,18 +171,30 @@ namespace MedGraphics {
 
 
         public Mat4 RotateAroundAxis(Vec3 n, float angle) {
+            return RotationRodrigues(n, angle) * this;
+        }
+
+        public static Mat4 RotationRodrigues(Vec3 n, float angle) {
+            n.Normalize();
+
             float rad = Mathf.Deg2Rad * angle;
             float cos = Mathf.Cos(rad);
             float sin = Mathf.Sin(rad);
 
-            Mat4 mat = new Mat4(
-                Mathf.Pow(n.x, 2) + (1 - Mathf.Pow(n.x, 2)) * cos, n.x * n.y * (1 - cos) - n.z * sin, n.x * n.y * (1 - cos) + n.y * sin, 0,
-                n.x * n.y * (1 - cos) + n.z * sin, Mathf.Pow(n.y, 2) + (1 - Mathf.Pow(n.y, 2)) * cos, n.y * n.z * (1 - cos) - n.x * sin, 0,
-                n.x * n.z * (1 - cos) - n.y * sin, n.y * n.z * (1 - cos) + n.x * sin, Mathf.Pow(n.z, 2) + (1 - Mathf.Pow(n.z, 2)) * cos, 0,
+            return new Mat4(
+                cos + n.x * n.x * (1 - cos), n.x * n.y * (1 - cos) - n.z * sin, n.x * n.z * (1 - cos) + n.y * sin, 0,
+                n.y * n.x * (1 - cos) + n.z * sin, cos + n.y * n.y * (1 - cos), n.y * n.z * (1 - cos) - n.x * sin, 0,
+                n.z * n.x * (1 - cos) - n.y * sin, n.z * n.y * (1 - cos) + n.x * sin, cos + n.z * n.z * (1 - cos), 0,
                 0, 0, 0, 1
             );
+        }
 
-            return mat * this;
+        public static Mat4 RotationRodriguesAroundPivot(Vec3 axis, float angleDeg, Vec3 pivot) {
+            var rotationMat = RotationRodrigues(axis, angleDeg);
+            var trans = Translation(pivot.x, pivot.y, pivot.z);
+            var transNeg = Translation(-pivot.x, -pivot.y, -pivot.z);
+
+            return trans * rotationMat * transNeg;
         }
 
 

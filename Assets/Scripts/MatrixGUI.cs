@@ -120,7 +120,7 @@ public class MatrixGUI : MonoBehaviour {
 
 
         GUILayout.BeginHorizontal();
-        GUILayout.Label("Translate A by C\n" + A.Translate(C.x, C.y, C.z).ToString());
+        GUILayout.Label("Translate A by C\n" + (A * Mat4.Translation(C.x, C.y, C.z)).ToString());
         GUILayout.Label("Scale A by C\n" + A.Scale(C.x, C.y, C.z).ToString());
 
         GUILayout.Label("Rotate A by 45 in X\n" + A.RotateX(45).ToString());

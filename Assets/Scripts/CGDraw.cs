@@ -42,8 +42,7 @@ namespace CG {
 
             var p = demo.BuildProjectionMatrix(w, h);
 
-            var mAxis = Mat4.Identity();
-            var mGrid = demo.BuildGridMatrix();
+            var mGrid = Mat4.Identity();
             var mCube = demo.BuildModelMatrix();
 
             // viewport in pixels
@@ -53,7 +52,6 @@ namespace CG {
             float vh = demo.vpH * h; if (vh < 1f) vh = 1f;
 
             var cube = demo.CollectCube();
-            var axes = demo.CollectAxes();
             cube.AddRange(demo.CollectAxes());
             var grid = demo.CollectGrid();
 

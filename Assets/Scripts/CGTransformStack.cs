@@ -33,21 +33,31 @@ public class CGTransformStack {
     }
 
     public void Translate(float x, float y, float z) {
-        current = current.Translate(x, y, z);
+        current *= Mat4.Translation(x, y, z);
     }
 
     public void Scale(float x, float y, float z) {
-        current = current.Scale(x, y, z);
+        current *= Mat4.Scaling(x, y, z);
     }
 
 
     public void RotateX(float degrees) {
-        current = current.RotateX(degrees);
+        current *= Mat4.RotationX(degrees);
     }
     public void RotateY(float degrees) {
-        current = current.RotateY(degrees);
+        current *= Mat4.RotationY(degrees);
     }
     public void RotateZ(float degrees) {
-        current = current.RotateZ(degrees);
+        current *= Mat4.RotationZ(degrees);
+    }
+
+    // TODO[PA-Rodrigues]: apply Rodrigues rotation about axis
+    public void RotateAxisRodrigues(Vec3 axis, float angleDeg) {
+        current *= Mat4.RotationRodrigues(axis, angleDeg);
+    }
+
+    // TODO[PA-Rodrigues]: Rodrigues with pivot (sandwich)
+    public void RotateAxisRodriguesPivot(Vec3 axis, float angleDeg, Vec3 pivot) {
+        current *= Mat4.RotationRodriguesAroundPivot(axis, angleDeg, pivot);
     }
 }
