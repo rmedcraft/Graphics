@@ -139,7 +139,7 @@ namespace MedGraphics {
         }
 
         // returns the dot product of a and b
-        public float DotVectors(Vec3 a, Vec3 b) {
+        public static float DotVectors(Vec3 a, Vec3 b) {
             return (a.x * b.x) + (a.y * b.y) + (a.z * b.z);
         }
 
@@ -151,12 +151,12 @@ namespace MedGraphics {
             return this;
         }
 
-        // sets this vector equal to the cross product of a and b
-        public Vec3 CrossVectors(Vec3 a, Vec3 b) {
-            x = a.y * b.z - a.z * b.y;
-            y = a.z * b.x - a.x * b.z;
-            z = a.x * b.y - a.y * b.x;
-            return this;
+
+        public static Vec3 CrossVectors(Vec3 a, Vec3 b) {
+            float x = a.y * b.z - a.z * b.y;
+            float y = a.z * b.x - a.x * b.z;
+            float z = a.x * b.y - a.y * b.x;
+            return new Vec3(x, y, z);
         }
 
         // inverts this vector

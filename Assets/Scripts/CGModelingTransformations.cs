@@ -47,6 +47,11 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     [Range(0.1f, 10f)] public float cubeDisplacement = 3f;
     public bool useAssignmentLayout = true; // toggle assignment mode
 
+    [Header("Camera (OpenGL LookAt, RHS)")]
+    public Vector3 camEye = new Vector3(0, 2, 6);
+    public Vector3 camTarget = new Vector3(0, 0, 0);
+    public Vector3 worldUp = new Vector3(0, 1, 0); // reference world up
+
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) usePerspective = false;
         if (Input.GetKeyDown(KeyCode.Alpha2)) usePerspective = true;
@@ -79,6 +84,10 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         var s = Mat4.Scaling(scaleGrid.x, scaleGrid.y, scaleGrid.z);
         // order: M = T * rz * ry * rx * s
         return t * rz * ry * rx * s;
+    }
+
+    public Mat4 BuildViewMatrix() {
+        return MathUtils.LookAtRH(new Vec3(camEye), new Vec3(camTarget), new Vec3(worldUp));
     }
 
     public Mat4 BuildProjectionMatrix(int pixelW, int pixelH) {

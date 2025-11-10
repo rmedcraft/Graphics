@@ -148,24 +148,32 @@ namespace MedGraphics {
             return Translation(tx, ty, tz) * this;
         }
 
-        public static Mat4 Ortho(float left, float right, float bottom, float top, float near, float far) {
+        public static Mat4 Ortho(float l, float r, float b, float t, float n, float f) {
+            var rl = r - l;
+            var tb = t - b;
+            var fn = f - n;
+
             return new Mat4(
-                2 / (right - left), 0, 0, -(right + left) / (right - left),
-                0, 2 / (top - bottom), 0, -(top + bottom) / (top - bottom),
-                0, 0, -2 / (far - near), -(far + near) / (far - near),
+                2 / rl, 0, 0, -(r + l) / rl,
+                0, 2 / tb, 0, -(t + b) / tb,
+                0, 0, -2 / fn, -(f + n) / fn,
                 0, 0, 0, 1
             );
         }
 
-        public static Mat4 Perspective(float fovYDegrees, float aspect, float near, float far) {
-            float fovYRad = fovYDegrees * Mathf.PI / 180f;
+        public static Mat4 Perspective(float fovYDegrees, float aspect, float n, float far) {
+            float fovYRad = fovYDegrees * Mathf.Deg2Rad;
             float f = 1f / Mathf.Tan(fovYRad / 2f);
+            float nf = far - n;
+            float sum = far + n;
+            float twice = 2 * far * n;
+
 
             return new Mat4(
                 f / aspect, 0, 0, 0,
                 0, f, 0, 0,
-                0, 0, far / (far - near), -(far * near) / (far - near),
-                0, 0, 1, 0
+                0, 0, -sum / nf, -twice / nf,
+                0, 0, -1, 0
             );
         }
 

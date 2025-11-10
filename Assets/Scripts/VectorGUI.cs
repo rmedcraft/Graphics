@@ -32,8 +32,8 @@ public class VectorGUI : MonoBehaviour {
 
         var add = A + B;
         var sub = A - B;
-        var dot = new Vec3().DotVectors(A, B);
-        var crs = new Vec3().CrossVectors(A, B);
+        var dot = Vec3.DotVectors(A, B);
+        var crs = Vec3.CrossVectors(A, B);
         var magA = A.Magnitude();
         var magB = B.Magnitude();
         var nA = A.Normalize().Clone();

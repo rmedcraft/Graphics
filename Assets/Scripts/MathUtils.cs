@@ -1,4 +1,6 @@
 
+using MedGraphics;
+
 public class MathUtils {
     /*
         Calculates the square root of a number n with the Newton-Raphson Method
@@ -25,6 +27,19 @@ public class MathUtils {
             n *= -1;
         }
         return n;
+    }
+
+    public static Mat4 LookAtRH(Vec3 eye, Vec3 target, Vec3 worldUp) {
+        Vec3 f = (target - eye) / (target - eye).Magnitude();
+        Vec3 s = Vec3.CrossVectors(f, worldUp) / Vec3.CrossVectors(f, worldUp).Magnitude();
+        Vec3 u = Vec3.CrossVectors(s, f);
+
+        return new Mat4(
+            s.x, s.y, s.z, -Vec3.DotVectors(s, eye),
+            u.x, u.y, u.z, -Vec3.DotVectors(u, eye),
+            -f.x, -f.y, -f.z, Vec3.DotVectors(f, eye),
+            0, 0, 0, 1
+        );
     }
 
     public static int Round(float n) {

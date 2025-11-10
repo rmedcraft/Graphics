@@ -41,7 +41,7 @@ namespace CG {
             int h = Screen.height;
 
             var p = demo.BuildProjectionMatrix(w, h);
-
+            var v = demo.BuildViewMatrix();
             var mGrid = Mat4.Identity();
             var mCube = demo.BuildModelMatrix();
 
@@ -61,54 +61,14 @@ namespace CG {
             GL.PushMatrix();
             GL.LoadPixelMatrix(0, w, h, 0); // 2D pixel space, (0,0)=top-left
 
-            DrawLinesTransformed(grid, mGrid, p, vx, vy, vw, vh);
+            DrawLinesTransformed(grid, mGrid, v, p, vx, vy, vw, vh);
             // DrawLinesTransformed(axes, mAxis, p, vx, vy, vw, vh);
-            DrawLinesTransformed(cube, mCube, p, vx, vy, vw, vh);
+            DrawLinesTransformed(cube, mCube, v, p, vx, vy, vw, vh);
 
             GL.PopMatrix();
         }
 
-        // void OnRenderObject() {
-        //     if (demo == null) return;
-        //     EnsureMaterial();
-
-        //     int W = Screen.width;
-        //     int H = Screen.height;
-
-        //     var M = demo.BuildModelMatrix();
-        //     var P = demo.BuildProjectionMatrix(W, H);
-
-        //     // viewport in pixels (avoid Mathf to stay consistent with "no math" rule for geometry)
-        //     float vx = demo.vpX * W;
-        //     float vy = demo.vpY * H;
-        //     float vw = demo.vpW * W; if (vw < 1f) vw = 1f;
-        //     float vh = demo.vpH * H; if (vh < 1f) vh = 1f;
-
-        //     var prims = demo.CollectPrims();
-
-        //     lineMat.SetPass(0);
-        //     GL.PushMatrix();
-        //     GL.LoadPixelMatrix(0, W, H, 0); // 2D pixel space, (0,0)=top-left
-
-        //     // Draw grid/cube in white, axes colored
-        //     DrawLinesTransformed(prims, M, P, vx, vy, vw, vh);
-
-        //     GL.PopMatrix();
-        // }
-
-        // void DrawLinesTransformed(List<Line3> lines, Mat4 m, Mat4 p, float vx, float vy, float vw, float vh) {
-        //     // --- CUBE (non-axis, non-grid) ---
-        //     GL.Begin(GL.LINES);
-        //     GL.Color(new Color(1, 1, 1, 1)); // white
-        //     for (int i = 0; i < lines.Count; i++) {
-        //         var ln = lines[i];
-        //         DrawLineObject(ln.a, ln.b, m, p, vx, vy, vw, vh);
-        //     }
-
-        //     GL.End();
-        // }
-
-        void DrawLinesTransformed(List<Line3> lines, Mat4 M, Mat4 P, float vx, float vy, float vw, float vh) {
+        void DrawLinesTransformed(List<Line3> lines, Mat4 M, Mat4 P, Mat4 V, float vx, float vy, float vw, float vh) {
             // pass 1: non-axes (white)
             GL.Begin(GL.LINES);
             GL.Color(new Color(1, 1, 1, 1));
@@ -118,7 +78,7 @@ namespace CG {
                 bool isAxisY = IsAxis(ln, 1);
                 bool isAxisZ = IsAxis(ln, 2);
                 if (isAxisX || isAxisY || isAxisZ) continue;
-                DrawLineObject(ln.a, ln.b, M, P, vx, vy, vw, vh);
+                DrawLineObject(ln.a, ln.b, M, P, V, vx, vy, vw, vh);
             }
             GL.End();
 
@@ -127,7 +87,7 @@ namespace CG {
             GL.Color(new Color(1, 0, 0, 1));
             for (int i = 0; i < lines.Count; i++)
                 if (IsAxis(lines[i], 0))
-                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, V, vx, vy, vw, vh);
             GL.End();
 
             // Y - green
@@ -135,7 +95,7 @@ namespace CG {
             GL.Color(new Color(0, 1, 0, 1));
             for (int i = 0; i < lines.Count; i++)
                 if (IsAxis(lines[i], 1))
-                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, V, vx, vy, vw, vh);
             GL.End();
 
             // Z - blue
@@ -143,7 +103,7 @@ namespace CG {
             GL.Color(new Color(0, 0, 1, 1));
             for (int i = 0; i < lines.Count; i++)
                 if (IsAxis(lines[i], 2))
-                    DrawLineObject(lines[i].a, lines[i].b, M, P, vx, vy, vw, vh);
+                    DrawLineObject(lines[i].a, lines[i].b, M, P, V, vx, vy, vw, vh);
             GL.End();
         }
 
@@ -158,11 +118,10 @@ namespace CG {
             return (MathUtils.Abs(a.x - b.x) < 1e-6f) && (MathUtils.Abs(a.y - b.y) < 1e-6f) && (MathUtils.Abs(a.z - b.z) < 1e-6f);
         }
 
-        void DrawLineObject(Vec3 aObj, Vec3 bObj, Mat4 m, Mat4 p, float vx, float vy, float vw, float vh) {
-            var pm = p * m;         // composite once
-            var aClip = pm * Vec4.FromPoint(aObj);    // then apply to each vertex
-            var bClip = pm * Vec4.FromPoint(bObj);
-
+        void DrawLineObject(Vec3 aObj, Vec3 bObj, Mat4 m, Mat4 p, Mat4 v, float vx, float vy, float vw, float vh) {
+            var pvm = p * v * m;         // composite once
+            var aClip = pvm * Vec4.FromPoint(aObj);    // then apply to each vertex
+            var bClip = pvm * Vec4.FromPoint(bObj);
 
             // perspective divide -> NDC
             Vec3 aNdc = aClip.Homogenized();
