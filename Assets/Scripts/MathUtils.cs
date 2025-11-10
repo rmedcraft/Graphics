@@ -46,7 +46,19 @@ public class MathUtils {
         return (int)n;
     }
 
-    // public static int Ceil(float n) {
+    public static int Ceil(float n) {
+        int rounded = Round(n);
+        if (n < rounded) {
+            // if the round method already rounded up
+            return rounded;
+        }
 
-    // }
+        // if the round method rounded down
+        float remainder = n - rounded;
+        return (int)(1 + n - remainder);
+    }
+
+    public static int Floor(float n) {
+        return Ceil(n - 1);
+    }
 }
