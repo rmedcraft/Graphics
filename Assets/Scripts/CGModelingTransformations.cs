@@ -52,6 +52,11 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public Vector3 camTarget = new Vector3(0, 0, 0);
     public Vector3 worldUp = new Vector3(0, 1, 0); // reference world up
 
+    [Header("Chaikin Subdivision (XY plane)")]
+    public bool showChaikin = true;
+    [Range(0, 6)] public int chaikinLevels = 0;
+    public float chaikinSquareSize = 2f;
+
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) usePerspective = false;
         if (Input.GetKeyDown(KeyCode.Alpha2)) usePerspective = true;
@@ -171,6 +176,7 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         if (showGridXZ) {
             lines.AddRange(CGWirePrims.GridXZ(gridExtent, gridStep));
         }
+
         return lines;
     }
 
@@ -179,6 +185,12 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         if (showAxes) {
             lines.AddRange(CGWirePrims.Axes(axesLength));
         }
+        return lines;
+    }
+
+    public List<Line3> CollectChaikin() {
+        var lines = new List<Line3>();
+        if (showChaikin) lines.AddRange(BuildChaikinCurve());
         return lines;
     }
 
@@ -192,7 +204,61 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
                 lines.AddRange(CGWirePrims.Cube(cubeSize));
             }
         }
+
+        lines.AddRange(CollectChaikin());
         return lines;
+    }
+
+    List<Line3> BuildChaikinCurve() {
+        // Guarantee a usable square side length so Chaikin never runs on degenerate loop
+        // (degenerate = control points collapse to one spot so no edges remain to subdivide)
+        float sideLength = Mathf.Max(0.1f, chaikinSquareSize);
+        // Half the side lets us offset from the origin to place a centered square easily
+        float halfSide = sideLength * 0.5f;
+        //Note Vec3 and Vec4 are our implementations of vector objects not the Unity
+        var control = new List<Vec3>(4){
+            new Vec3(-halfSide, -halfSide, 0f),
+            new Vec3(halfSide, -halfSide, 0f),
+            new Vec3(halfSide, halfSide, 0f),
+            new Vec3(-halfSide, halfSide, 0f)
+        };
+        // "refined" holds the subdivided control loop after the requested Chaikin levels
+        var refined = ApplyChaikin(control, chaikinLevels);
+        var result = new List<Line3>(refined.Count);
+        for (int i = 0; i < refined.Count; i++) {
+            Vec3 a = refined[i];
+            Vec3 b = refined[(i + 1) % refined.Count];
+            result.Add(new Line3(a, b));
+        }
+        return result;
+    }
+
+    public List<Vec3> ApplyChaikin(List<Vec3> points, float levels) {
+        var current = new List<Vec3>(points);
+
+        if (levels == 0) {
+            return current;
+        }
+
+        for (var i = 0; i < levels; i++) {
+            var count = current.Count;
+            var next = new List<Vec3>();
+
+            for (var j = 0; j < count; j++) {
+                var p0 = current[j];
+                var p1 = current[(j + 1) % count];
+
+                var q = 0.75f * p0 + 0.25f * p1;
+                var r = 0.25f * p0 + 0.75f * p1;
+
+                next.Add(q);
+                next.Add(r);
+            }
+
+            current = next;
+        }
+
+        return current;
     }
 
 }

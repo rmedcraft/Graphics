@@ -52,7 +52,7 @@ namespace CG {
             float vh = demo.vpH * h; if (vh < 1f) vh = 1f;
 
             var cube = demo.CollectCube();
-            cube.AddRange(demo.CollectAxes());
+            // cube.AddRange(demo.CollectAxes());
             var grid = demo.CollectGrid();
 
             GL.Color(Color.white); // or any bright color, alpha=1
