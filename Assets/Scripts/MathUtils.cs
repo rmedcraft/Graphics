@@ -30,15 +30,15 @@ public class MathUtils {
     }
 
     public static Mat4 LookAtRH(Vec3 eye, Vec3 target, Vec3 worldUp) {
-        Vec3 f = (target - eye) / (target - eye).Magnitude();
-        Vec3 s = Vec3.CrossVectors(f, worldUp) / Vec3.CrossVectors(f, worldUp).Magnitude();
+        Vec3 f = (target - eye).Normalize();
+        Vec3 s = Vec3.CrossVectors(f, worldUp).Normalize();
         Vec3 u = Vec3.CrossVectors(s, f);
 
         return new Mat4(
-            s.x, s.y, s.z, -Vec3.DotVectors(s, eye),
-            u.x, u.y, u.z, -Vec3.DotVectors(u, eye),
-            -f.x, -f.y, -f.z, Vec3.DotVectors(f, eye),
-            0, 0, 0, 1
+            s.x, u.x, -f.x, 0,
+            s.y, u.y, -f.y, 0,
+            s.z, u.z, -f.z, 0,
+            -Vec3.DotVectors(s, eye), -Vec3.DotVectors(u, eye), Vec3.DotVectors(f, eye), 1
         );
     }
 

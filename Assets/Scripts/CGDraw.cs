@@ -42,7 +42,7 @@ namespace CG {
 
             var p = demo.BuildProjectionMatrix(w, h);
             var v = demo.BuildViewMatrix();
-            var mGrid = Mat4.Identity();
+            var mGrid = demo.BuildGridMatrix();
             var mCube = demo.BuildModelMatrix();
 
             // viewport in pixels

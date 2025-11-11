@@ -21,10 +21,10 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public Vector3 rotateDeg = new Vector3(35, 0, 0);
     public Vector3 scale = new Vector3(1, 1, 1);
     public bool autoSpin = true;
-    public Vector3 spinSpeedDegPerSec = new Vector3(0, 45, 0);
+    public Vector3 spinSpeedDegPerSec = new Vector3(0, 45, 6);
 
     [Header("Grid Transform")]
-    public Vector3 translateGrid = new Vector3(0, -1, 15);
+    public Vector3 translateGrid = new Vector3(0, -1, 8);
     public Vector3 rotateGrid = new Vector3(0, 0, 0);
     public Vector3 scaleGrid = new Vector3(1, 1, 1);
 
@@ -48,7 +48,7 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public bool useAssignmentLayout = true; // toggle assignment mode
 
     [Header("Camera (OpenGL LookAt, RHS)")]
-    public Vector3 camEye = new Vector3(0, 2, 6);
+    public Vector3 camEye = new Vector3(0, 0, 1);
     public Vector3 camTarget = new Vector3(0, 0, 0);
     public Vector3 worldUp = new Vector3(0, 1, 0); // reference world up
 
@@ -112,7 +112,7 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         float ax = t * 90f; // for +X cube
         float ay = t * 70f; // for -X cube
         float az = t * 50f; // for +Y cube
-        axisAngleDeg = t * 90f;
+        axisAngleDeg = t * 90f % 360;
 
         // Rodrigues inputs (axis normalized inside builder)
         Vec3 axis = new Vec3(axisDir);
