@@ -71,7 +71,7 @@ namespace CG {
         void DrawLinesTransformed(List<Line3> lines, Mat4 M, Mat4 P, Mat4 V, float vx, float vy, float vw, float vh) {
             // pass 1: non-axes (white)
             GL.Begin(GL.LINES);
-            GL.Color(new Color(1, 1, 1, 1));
+            GL.Color(new Color(1, 0, 1, 1));
             for (int i = 0; i < lines.Count; i++) {
                 var ln = lines[i];
                 bool isAxisX = IsAxis(ln, 0);

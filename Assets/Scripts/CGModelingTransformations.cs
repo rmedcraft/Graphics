@@ -225,7 +225,7 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         // "refined" holds the subdivided control loop after the requested Chaikin levels
         var refined = ApplyChaikin(control, chaikinLevels);
         var result = new List<Line3>(refined.Count);
-        for (int i = 0; i < refined.Count; i++) {
+        for (int i = 1; i < refined.Count; i++) {
             Vec3 a = refined[i];
             Vec3 b = refined[(i + 1) % refined.Count];
             result.Add(new Line3(a, b));
