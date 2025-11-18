@@ -12,6 +12,11 @@ public class Line3 {
     public string ToString() {
         return a.ToString() + "\n" + b.ToString();
     }
+
+
+    public bool Equals(Line3 line) {
+        return (line.a == b && line.b == a) || (line.a == a && line.b == b);
+    }
 }
 
 public class CGWirePrims {

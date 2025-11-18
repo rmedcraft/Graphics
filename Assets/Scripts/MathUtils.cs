@@ -61,4 +61,8 @@ public class MathUtils {
     public static int Floor(float n) {
         return Ceil(n - 1);
     }
+
+    public static float Max(float a, float b) {
+        return (a > b) ? a : b;
+    }
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using MedGraphics;
+using System;
 
 public class CG_ModelingTransformsDemo : MonoBehaviour {
     [Header("Projection")]
@@ -56,6 +57,13 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public bool showChaikin = true;
     [Range(0, 6)] public int chaikinLevels = 0;
     public float chaikinSquareSize = 2f;
+
+    [Header("Quadratic Bezier (XY plane)")]
+    public bool showBezier = true;
+    public bool showBezierControlPolygon = false;
+    public bool bezierClosed = true; // keep true for a loop around the square
+    public float bezierSquareSize = 2f; // size of the 4-pt control loop
+    [Range(2, 64)] public int bezierSamplesPerSegment = 12;
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) usePerspective = false;
@@ -197,15 +205,18 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public List<Line3> CollectCube() {
         var lines = new List<Line3>();
 
-        if (showCube) {
-            if (useAssignmentLayout) {
-                lines.AddRange(BuildStackedCubes());
-            } else {
-                lines.AddRange(CGWirePrims.Cube(cubeSize));
-            }
-        }
+        // if (showCube) {
+        //     if (useAssignmentLayout) {
+        //         lines.AddRange(BuildStackedCubes());
+        //     } else {
+        //         lines.AddRange(CGWirePrims.Cube(cubeSize));
+        //     }
+        // }
 
-        lines.AddRange(CollectChaikin());
+        // lines.AddRange(CollectChaikin());
+        if (showBezier) {
+            lines.AddRange(BuildBezierCurve());
+        }
         return lines;
     }
 
@@ -261,4 +272,130 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         return current;
     }
 
+    // Function EvaluateQuadraticBezier(P0, P1, P2, t):
+    //     A = (1 - t) * P0 + t * P1
+    //     B = (1 - t) * P1 + t * P2
+    //     return (1 - t) * A + t * B
+    // End
+    public Vec3 EvaluateQuadraticBezier(Vec3 P0, Vec3 P1, Vec3 P2, float t) {
+        var a = (1 - t) * P0 + t * P1;
+        var b = (1 - t) * P1 + t * P2;
+        return (1 - t) * a + t * b;
+    }
+
+    // Procedure SampleQuadraticSegment(P0, P1, P2, steps, dest, includeFirstPoint):
+    //     for s = 0 .. steps-1:
+    //     if (includeFirstPoint == false) and (s == 0): continue
+    //     t = (steps == 1) ? 0 : s / (steps - 1)
+    //     dest.append( EvaluateQuadraticBezier(P0, P1, P2, t) )
+    // End
+
+    public void SampleQuadraticSegment(Vec3 P0, Vec3 P1, Vec3 P2, int steps, List<Vec3> dest, bool includeFirstPoint) {
+        for (var i = 0; i < steps; i++) {
+            if (!includeFirstPoint && i == 0) {
+                continue;
+            }
+
+            var t = (steps == 1) ? 0 : (float)i / (steps - 1);
+            dest.Add(EvaluateQuadraticBezier(P0, P1, P2, t));
+        }
+    }
+
+    // Function SampleBezier(Control[], samplesPerSegment, closed):
+    //     if Control.length < 3: return copy(Control)
+    //     steps = max(2, samplesPerSegment)
+    //     count = Control.length
+    //     sampled = []
+    //     segmentCount = closed ? count : (count - 2)
+    //     for i = 0 .. segmentCount-1:
+    //     P0 = Control[i]
+    //     P1 = closed ? Control[(i+1) % count] : Control[i+1]
+    //     P2 = closed ? Control[(i+2) % count] : Control[i+2]
+    //     includeFirst = (i == 0)
+    //     SampleQuadraticSegment(P0, P1, P2, steps, sampled, includeFirst)
+    //     return sampled
+    // End
+
+    public List<Vec3> SampleBezier(List<Vec3> control, int samplesPerSegment) {
+        if (control.Count < 3) {
+            return new List<Vec3>(control);
+        }
+
+        var steps = (int)MathUtils.Max(2, samplesPerSegment);
+        var count = control.Count;
+        var sampled = new List<Vec3>();
+        var segmentCount = count;
+
+        for (var i = 0; i < segmentCount; i++) {
+            var P0 = control[i];
+            var P1 = control[(i + 1) % count];
+            var P2 = control[(i + 2) % count];
+
+            var includeFirst = (i == 0);
+            SampleQuadraticSegment(P0, P1, P2, steps, sampled, includeFirst);
+        }
+
+        return sampled;
+    }
+
+    // Procedure BuildBezierCurve():
+    //     side = clamp(bezierSquareSize, 0.1, +inf)
+    //     h = side / 2
+    //     Control = [(-h,-h,0), (h,-h,0), (h,h,0), (-h,h,0)]
+    //     Points = SampleBezier(Control, bezierSamplesPerSegment, bezierClosed)
+    //     if Points.length < 2: Points = Control
+    //     return BuildPolyline(Points, bezierClosed) # converts to connected Line3 segments
+    // End
+
+    public List<Line3> BuildBezierCurve() {
+        var side = Mathf.Clamp(bezierSquareSize, 0.1f, Mathf.Infinity);
+        var h = side / 2;
+
+        var control = new List<Vec3> {
+            new Vec3(-h, -h, 0),
+            new Vec3(h, -h, 0),
+            new Vec3(h, h, 0),
+            new Vec3(-h, h, 0),
+        };
+
+        var points = SampleBezier(control, bezierSamplesPerSegment);
+        if (points.Count < 2) {
+            points = control;
+        }
+        return BuildPolyline(points, control, bezierClosed);
+    }
+
+    public List<Line3> BuildPolyline(List<Vec3> points, List<Vec3> control, bool isClosed) {
+        var polyline = new List<Line3>();
+
+        // check if a vector exists in a list
+        static bool hasVec(List<Vec3> list, Vec3 test) {
+            foreach (Vec3 v in list) {
+                if (v.Equals(test)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        var endpoints = new List<Vec3>();
+
+        for (var i = 0; i < points.Count - 1; i++) {
+            var line = new Line3(points[i], points[i + 1]);
+            if (!hasVec(control, points[i])) {
+                polyline.Add(line);
+            } else {
+                // store endpoints for closing the polyline
+                endpoints.Add(points[i + 1]);
+            }
+        }
+
+        // close polyline by connecting control points to the associated bezier endpoint
+        if (isClosed) {
+            for (var i = 0; i < endpoints.Count; i++) {
+                polyline.Add(new Line3(endpoints[i], control[i]));
+            }
+        }
+        return polyline;
+    }
 }
