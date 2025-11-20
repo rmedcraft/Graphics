@@ -279,7 +279,7 @@ MonoBehaviour:
   vpY: 0
   vpW: 1
   vpH: 1
-  translate: {x: 0, y: 0, z: 1}
+  translate: {x: 10, y: -8, z: -12}
   rotateDeg: {x: 35, y: 0, z: 0}
   scale: {x: 1, y: 1, z: 1}
   autoSpin: 1
@@ -291,7 +291,7 @@ MonoBehaviour:
   cubeSize: 2
   showAxes: 1
   axesLength: 2
-  showGridXZ: 1
+  showGridXZ: 0
   gridExtent: 8
   gridStep: 1
   axisDir: {x: 1, y: 1, z: 1}
@@ -306,6 +306,13 @@ MonoBehaviour:
   showChaikin: 1
   chaikinLevels: 0
   chaikinSquareSize: 2
+  showBezier: 0
+  showBezierControlPolygon: 0
+  bezierClosed: 1
+  bezierSquareSize: 2
+  bezierSamplesPerSegment: 12
+  iterations: 2
+  showTurtle: 1
 --- !u!114 &330585549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,6 +544,13 @@ MonoBehaviour:
   showChaikin: 1
   chaikinLevels: 0
   chaikinSquareSize: 2
+  showBezier: 1
+  showBezierControlPolygon: 0
+  bezierClosed: 1
+  bezierSquareSize: 2
+  bezierSamplesPerSegment: 12
+  iterations: 2
+  showTurtle: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -59,11 +59,15 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
     public float chaikinSquareSize = 2f;
 
     [Header("Quadratic Bezier (XY plane)")]
-    public bool showBezier = true;
+    public bool showBezier = false;
     public bool showBezierControlPolygon = false;
     public bool bezierClosed = true; // keep true for a loop around the square
     public float bezierSquareSize = 2f; // size of the 4-pt control loop
     [Range(2, 64)] public int bezierSamplesPerSegment = 12;
+
+    [Header("Turtle L-System")]
+    [Range(0, 5)] public int iterations = 2;
+    public bool showTurtle = true;
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Alpha1)) usePerspective = false;
@@ -216,6 +220,11 @@ public class CG_ModelingTransformsDemo : MonoBehaviour {
         // lines.AddRange(CollectChaikin());
         if (showBezier) {
             lines.AddRange(BuildBezierCurve());
+        }
+        if (showTurtle) {
+            var l = new LSystemExpander(iterations);
+            l.Turtle(l.Expand());
+            lines.AddRange(l.edges);
         }
         return lines;
     }
